@@ -1,0 +1,13 @@
+# Knowledge Graph RAG - Requirements
+
+# Core LLM framework
+langchain-openai>=0.2.0
+
+# Knowledge Graph (in-memory)
+networkx>=3.0
+
+# Visualization
+matplotlib>=3.7.0
+
+# Environment variables
+python-dotenv>=1.0.0

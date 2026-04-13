@@ -1,0 +1,117 @@
+🔹 RAG (Retrieval-Augmented Generation) — Key Points, Components & Types
+🧠 1. What is RAG?
+
+RAG = Retrieval + Generation
+
+Combines LLMs + external knowledge sources
+
+Instead of relying only on training data, it fetches real-time relevant info
+
+Improves accuracy, freshness, and factual grounding
+
+⚙️ 2. Why RAG is Needed
+
+LLMs have hallucination problems
+
+Training data is static (not updated)
+
+Cannot store private/company data
+
+RAG enables:
+
+📌 Real-time knowledge
+
+📌 Domain-specific answers
+
+📌 Cost-efficient (no retraining)
+
+🧩 3. Core Components of RAG
+
+Document Loader – Loads PDFs, docs, APIs, DBs
+
+Text Splitter – Breaks large text into chunks
+
+Embedding Model – Converts text → vectors
+
+Vector Store – Stores embeddings (FAISS, Pinecone)
+
+Retriever – Fetches relevant chunks
+
+LLM (Generator) – Generates final answer
+
+🔄 4. RAG Workflow (Step-by-Step)
+
+User asks a query
+
+Query → converted into embedding
+
+Retriever finds similar chunks
+
+Relevant documents passed to LLM
+
+LLM generates context-aware answer
+
+📦 5. Types of RAG
+
+Naive RAG – Basic retrieval + generation
+
+Advanced RAG – Adds ranking, filtering
+
+Hybrid RAG – Combines keyword + vector search
+
+Agentic RAG – Uses AI agents for decision-making
+
+Self-RAG – LLM evaluates & improves its own output
+
+🔍 6. Retrieval Techniques
+
+Dense Retrieval (vector similarity)
+
+Sparse Retrieval (BM25, keyword-based)
+
+Hybrid Retrieval (best of both)
+
+🧠 7. Embeddings Role
+
+Converts text into numerical vectors
+
+Captures semantic meaning
+
+Enables similarity search
+
+Example:
+“AI agent” ≈ “autonomous system” (close in vector space)
+
+🗂️ 8. Vector Database Examples
+
+FAISS (local, fast)
+
+Pinecone (cloud-based)
+
+Weaviate
+
+Chroma
+
+🚀 9. Benefits of RAG
+
+✔ Reduces hallucination
+
+✔ Uses private data securely
+
+✔ No need for retraining
+
+✔ Scalable for enterprise apps
+
+✔ Improves answer relevance
+
+⚠️ 10. Limitations of RAG
+
+Retrieval quality affects output
+
+Chunking strategy is critical
+
+Latency can increase
+
+Needs good embedding model
+
+Complex pipeline vs simple LLM
