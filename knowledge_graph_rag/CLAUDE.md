@@ -1,51 +1,38 @@
 # Knowledge Graph RAG
 
-## Project Overview
+## What This Project Does
 
-A Retrieval-Augmented Generation (RAG) system built on knowledge graphs using the **Graphiti** framework by Zep. Graphiti builds dynamic, temporally-aware knowledge graphs from unstructured data, enabling more contextual and accurate retrieval than traditional vector-based RAG.
+Ask questions about your documents using AI. This system reads text files, builds a **knowledge graph** (a web of connected facts) using AI, and uses that understanding to answer questions accurately. Built with Graphiti (by Zep), Neo4j, and OpenAI.
 
 ## Tech Stack
 
-- **Language:** Python 3.11+
-- **Knowledge Graph Framework:** [Graphiti](https://github.com/getzep/graphiti) (by Zep)
-- **Graph Database:** Neo4j (required by Graphiti)
-- **LLM Provider:** OpenAI (default Graphiti integration)
-- **Embedding Model:** OpenAI text-embedding-3-small (default)
-
-## Architecture
-
-```
-User Query → Graphiti Search → Knowledge Graph (Neo4j) → Context Assembly → LLM → Response
-                                      ↑
-                          Document Ingestion Pipeline
-                          (episodes → nodes + edges)
-```
-
-### Core Concepts (Graphiti)
-
-- **Episodes:** Units of ingested data (text, messages, documents). Each episode is processed into graph nodes and edges.
-- **Entity Nodes:** Extracted entities stored as graph nodes with embeddings.
-- **Edges (Relations):** Typed relationships between entities, also with embeddings.
-- **Temporal Awareness:** All nodes and edges carry timestamps, enabling point-in-time queries and handling of evolving facts.
-- **Community Detection:** Graphiti groups related entities into communities for broader context retrieval.
+- **Python 3.11+**
+- **Graphiti** (`graphiti-core`) by Zep - extracts entities and relationships from text into a knowledge graph
+- **Neo4j** - graph database that stores the knowledge graph (runs via Docker)
+- **OpenAI** (`gpt-4o-mini`) - LLM for entity extraction during ingestion and answer generation during queries
+- **python-dotenv** - loads environment variables from `.env`
+- **pydantic** - data validation
 
 ## Project Structure
 
 ```
 knowledge_graph_rag/
-├── CLAUDE.md
-├── requirements.txt
-├── .env                  # API keys and Neo4j connection (not committed)
-├── src/
-│   ├── __init__.py
-│   ├── config.py         # Configuration and environment loading
-│   ├── ingestion.py      # Document ingestion into Graphiti
-│   ├── retrieval.py      # Knowledge graph search and context retrieval
-│   ├── generation.py     # LLM response generation with retrieved context
-│   └── graph_utils.py    # Neo4j and Graphiti helper utilities
-├── data/                 # Source documents for ingestion
-├── notebooks/            # Experimentation notebooks
-└── tests/
+├── main.py                  # CLI entry point - run this file
+├── README.md                # Beginner-friendly setup and usage guide
+├── CLAUDE.md                # Project overview for Claude Code
+├── claude_build_prompt.md   # Give this to Claude to rebuild the project from scratch
+├── requirements.txt         # Python dependencies
+├── .env                     # API keys and Neo4j credentials (not committed)
+├── .env.example             # Template for .env
+├── data/
+│   └── elon_musk.txt        # Sample document about Elon Musk
+└── src/
+    ├── __init__.py           # Makes src a Python package
+    ├── config.py             # Loads settings from .env
+    ├── graph_utils.py        # Connects to Neo4j via Graphiti client
+    ├── ingestion.py          # Reads documents and builds the knowledge graph
+    ├── retrieval.py          # Searches the graph and formats context for LLM
+    └── generation.py         # Generates answers using OpenAI with retrieved context
 ```
 
 ## Environment Variables
@@ -53,27 +40,26 @@ knowledge_graph_rag/
 ```
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USER=neo4j
-NEO4J_PASSWORD=<password>
-OPENAI_API_KEY=<key>
+NEO4J_PASSWORD=password
+OPENAI_API_KEY=<your-openai-api-key>
 ```
-
-## Setup
-
-1. Start Neo4j (Docker recommended): `docker run -p 7474:7474 -p 7687:7687 neo4j`
-2. Install dependencies: `pip install -r requirements.txt`
-3. Copy `.env.example` to `.env` and fill in credentials
-4. Run ingestion, then query
 
 ## Key Commands
 
-- **Install deps:** `pip install graphiti-core neo4j openai python-dotenv`
-- **Run Neo4j:** `docker run -d --name neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password neo4j`
-- **Neo4j Browser:** http://localhost:7474
+- **Start Neo4j:** `docker run -d --name neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password neo4j`
+- **Start Neo4j (if already created):** `docker start neo4j`
+- **Ingest a document:** `python main.py ingest --file data/elon_musk.txt`
+- **Ingest a folder:** `python main.py ingest --dir data/`
+- **Ask a question:** `python main.py query "What companies did Elon Musk found?"`
+- **Interactive Q&A:** `python main.py interactive`
+- **Clear all data:** `python main.py reset`
+- **Visualize graph (visual):** Open http://localhost:7474, login (`neo4j` / `password`), run `MATCH (n)-[r]->(m) RETURN n, r, m`
+- **Visualize graph (table with relationship names):** `MATCH (n)-[r:RELATES_TO]->(m) RETURN n.name AS source, r.name AS relationship, r.fact AS fact, m.name AS target`
 
 ## Development Guidelines
 
 - Use `async/await` throughout — Graphiti's API is fully asynchronous
-- Always close the Graphiti client on shutdown (`await graphiti.close()`)
-- Use `.env` for all secrets; never hardcode API keys
-- Add temporal metadata (timestamps) when ingesting episodes for proper temporal reasoning
-- Prefer `graphiti.search()` with hybrid search (combining BM25 + embedding similarity) for retrieval
+- Always close the Graphiti client on shutdown using `try/finally` with `await client.close()`
+- Use `.env` for all secrets — never hardcode API keys
+- Pass timestamps when ingesting episodes for proper temporal reasoning
+- Use `group_id` parameter for graph partitioning (default: `"default"`)
