@@ -1,0 +1,68 @@
+RAG (Retrieval-Augmented Generation) — Key Points, Components & Types
+
+1. What is RAG?
+RAG = Retrieval + Generation.
+It combines LLMs with external knowledge sources. Instead of relying only on
+training data, it fetches real-time relevant information, improving accuracy,
+freshness, and factual grounding.
+
+2. Why RAG is Needed
+- LLMs have hallucination problems.
+- Training data is static (not updated).
+- LLMs cannot store private/company data.
+RAG enables real-time knowledge, domain-specific answers, and is cost-efficient
+(no retraining required).
+
+3. Core Components of RAG
+- Document Loader: Loads PDFs, docs, APIs, DBs.
+- Text Splitter: Breaks large text into chunks.
+- Embedding Model: Converts text into vectors.
+- Vector Store: Stores embeddings (FAISS, Pinecone, Chroma, Weaviate).
+- Retriever: Fetches relevant chunks.
+- LLM (Generator): Generates the final answer.
+
+4. RAG Workflow (Step-by-Step)
+- User asks a query.
+- Query is converted into an embedding.
+- Retriever finds similar chunks from the vector store.
+- Relevant documents are passed to the LLM.
+- LLM generates a context-aware answer.
+
+5. Types of RAG
+- Naive RAG: Basic retrieval plus generation.
+- Advanced RAG: Adds ranking and filtering.
+- Hybrid RAG: Combines keyword and vector search.
+- Agentic RAG: Uses AI agents for decision-making.
+- Self-RAG: The LLM evaluates and improves its own output.
+- Adaptive RAG: Routes each query to the best strategy (no retrieval, single-step,
+  multi-step, or a different data source) based on query complexity.
+
+6. Retrieval Techniques
+- Dense Retrieval: vector similarity.
+- Sparse Retrieval: BM25, keyword-based.
+- Hybrid Retrieval: best of both.
+
+7. Role of Embeddings
+Embeddings convert text into numerical vectors that capture semantic meaning,
+enabling similarity search. Example: "AI agent" is close to "autonomous system"
+in vector space.
+
+8. Vector Database Examples
+- FAISS (local, fast)
+- Pinecone (cloud-based)
+- Weaviate
+- Chroma
+
+9. Benefits of RAG
+- Reduces hallucination.
+- Uses private data securely.
+- No retraining needed.
+- Scalable for enterprise apps.
+- Improves answer relevance.
+
+10. Limitations of RAG
+- Retrieval quality affects output.
+- Chunking strategy is critical.
+- Latency can increase.
+- Needs a good embedding model.
+- More complex pipeline than a simple LLM call.
