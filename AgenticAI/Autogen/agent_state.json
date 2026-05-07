@@ -1,0 +1,19 @@
+{
+  "type": "AssistantAgentState",
+  "version": "1.0.0",
+  "llm_context": {
+    "messages": [
+      {
+        "content": "My name is Pradeep.",
+        "source": "user",
+        "type": "UserMessage"
+      },
+      {
+        "content": "Nice to meet you, Pradeep! How can I assist you today?",
+        "thought": null,
+        "source": "chatbot",
+        "type": "AssistantMessage"
+      }
+    ]
+  }
+}
